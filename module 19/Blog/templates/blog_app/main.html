@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #FFFAFA;
+            background-color: #2F4F4F
+        }
+        h1, {
+            color: #C0C0C0;
+        }
+
+        h2, h3, h4, h5, h6 {
+            color: #FFDAB9;
+        }
+
+        a {
+            color: #00CED1;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #87CEEB;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .items-per-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        .post {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #696969;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Список постов</h1>
+        {% for post in page_obj %}
+        <div class="post">
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content }}</p>
+            <p>Created at: {{ post.created_at }}</p>
+        </div>
+        {% endfor %}
+
+    </div>
+<div class="pagination">
+    <p>Страницы:</p>
+    <ul>
+        {% if page_obj.has_previous %}
+            <tr><a href="?page={{ page_obj.previous_page_number }}"><<< Previous</a></tr>
+        {% endif %}
+        <tr>{{ page_obj.number }}{{ paginator.num_pages }}</tr>
+        {% if page_obj.has_next %}
+            <tr><a href="?page={{ page_obj.next_page_number }}">Next >>></a></tr>
+        {% endif %}
+    </ul>
+    <div class="items-per-page">
+        <label for="items-per-page">Элементов на странице:</label>
+        <select id="items-per-page" name="items-per-page" onchange="changeItemsPerPage(this)">
+            <option value="5" {% if page_obj.paginator.per_page == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if page_obj.paginator.per_page == 10 %}selected{% endif %}>10</option>
+            <option value="15" {% if page_obj.paginator.per_page == 15 %}selected{% endif %}>15</option>
+            <option value="20" {% if page_obj.paginator.per_page == 20 %}selected{% endif %}>20</option>
+        </select>
+    </div>
+</div>
+
+<script>
+    function changeItemsPerPage(select) {
+        var itemsPerPage = select.value;
+        var currentPage = {{ page_obj.number }};
+        var url = new URL(window.location.href);
+        url.searchParams.set('page', 1);
+        url.searchParams.set('items_per_page', itemsPerPage);
+        window.location.href = url.toString();
+    }
+</script>
+</body>
+</html>
